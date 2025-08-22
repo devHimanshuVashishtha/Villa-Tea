@@ -1,0 +1,443 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  password: String!
+  profileImage: String
+  dateOfBirth: String
+  gender: String
+  addresses: [Address!]
+  role: String
+}
+
+type Address {
+  id: String!
+  pincode: Int
+  userId: String
+  city: String
+  state: String
+  country: String
+  street: String
+  landmark: String
+  isDefault: Boolean!
+  latitude: Float
+  longitude: Float
+}
+
+type UserProfile {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  profileImage: String
+  dateOfBirth: String
+  gender: String
+  addresses: [Address!]
+  role: String
+}
+
+type sendOtpForForgotPasswordResponse {
+  output: String!
+  email: String!
+}
+
+type verifyForgotPasswordOtpResponse {
+  success: String!
+  message: String!
+  userId: String!
+}
+
+type resetPasswordResponse {
+  success: String!
+  message: String!
+}
+
+type ChangeUserPasswordResponse {
+  message: String!
+}
+
+type JwtAuthResponse {
+  access_token: String!
+  requires2FA: Boolean!
+}
+
+type Contactus {
+  id: String!
+  name: String!
+  phone: String!
+  email: String!
+  message: String!
+}
+
+type Home {
+  id: String!
+  image: String!
+  heading: String!
+  paragraphs: [Paragraph!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Paragraph {
+  id: String!
+  text: String!
+}
+
+type Variant {
+  id: String!
+  size: String!
+  price: Float!
+}
+
+type Product {
+  id: String!
+  name: String!
+  collection: String!
+  flavour: String!
+  origin: String!
+  qualities: [String!]!
+  caffeine: String!
+  allegens: [String!]!
+  isOrganic: Boolean!
+  isVegan: Boolean!
+  variants: [Variant!]!
+}
+
+type ProductPaginationResponse {
+  items: [Product!]!
+  totalItems: Int!
+  totalPages: Int!
+  hasNextPage: Boolean!
+}
+
+type Cart {
+  """Unique identifier for the cart"""
+  id: String!
+  userId: Int
+
+  """List of items in the cart"""
+  items: [CartItem!]!
+
+  """When the cart was created"""
+  createdAt: DateTime!
+
+  """When the cart was last updated"""
+  updatedAt: DateTime!
+}
+
+type CartItem {
+  """Unique identifier for the cart item"""
+  id: String!
+
+  """ID of the variant being added to the cart"""
+  variantId: String!
+
+  """Quantity of the product variant"""
+  quantity: Int!
+}
+
+type Blog {
+  id: String!
+  heading: String!
+  image: String!
+  paragraphs: [BlogParagraph!]!
+}
+
+type BlogParagraph {
+  id: String!
+  text: String!
+}
+
+type Wishlist {
+  """Example field (placeholder)"""
+  id: String!
+}
+
+type Coupoun {
+  id: String!
+  code: String!
+  discount: Int!
+  type: String!
+  minimumAmount: Float
+  size: String
+  appliesToAll: Boolean!
+  expiresAt: DateTime!
+  isActive: Boolean!
+  createdAt: DateTime!
+  products: [Product!]
+  variants: [Variant!]
+}
+
+type ApplyCouponResponse {
+  valid: Boolean!
+  message: String!
+  discountAmount: Float
+  finalAmount: Float
+}
+
+type Order {
+  id: String!
+  userId: String!
+  items: [OrderItem!]!
+  total: Float!
+  status: String!
+  paymentId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OrderItem {
+  id: String!
+  orderId: String!
+  variant: Variant!
+  variantId: String!
+  quantity: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Rating {
+  id: String!
+  rating: Float!
+  review: String
+  userId: String!
+  productId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type NotificationModel {
+  id: ID!
+  title: String!
+  message: String!
+  read: Boolean!
+  createdAt: DateTime!
+  expiresAt: DateTime
+  type: String
+}
+
+type Query {
+  getUserProfile: UserProfile!
+  homes: [Home!]!
+  home(id: String!): Home!
+  filterProducts(filters: ProductFilterInput!, pageNumber: Float!, pageSize: Float! = 5): ProductPaginationResponse!
+  findProductById(id: String!): Product!
+  cartByUser(userId: String!): Cart!
+  cartById(cartId: String!): Cart!
+  blog(id: String!): Blog!
+  wishlist: [Wishlist!]!
+  myOrders: [Order!]!
+  myNotifications: [NotificationModel!]!
+}
+
+input ProductFilterInput {
+  collection: String
+  flavour: String
+  origin: String
+  qualities: [String!]
+  caffeine: String
+  allegens: [String!]
+  isOrganic: Boolean
+  isVegan: Boolean
+  sortBy: String
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  sendOtpForForgotPassword(email: String): sendOtpForForgotPasswordResponse!
+  verifyForgotPasswordOtp(email: String!, otp: String!): verifyForgotPasswordOtpResponse!
+  resetPassword(userId: String!, newPassword: String!): resetPasswordResponse!
+  changeUserPassword(oldPassword: String!, newPassword: String!, confirmNewPassword: String!): ChangeUserPasswordResponse!
+  updateUserProfile: User!
+  updateUserAddress(updateUserAddressInput: UpdateUserAddressInput!): Address!
+  addUserAddressByManualOrLiveLocation(createUserAddressInput: CreateUserAddressInput!): Address!
+  makeDefaultAddress(addressFieldId: String!): Address!
+  deleteAccount: User!
+  deleteUserAddress(addressId: String!): Address!
+  login(loginInput: LoginInput!): JwtAuthResponse!
+  verifyOtp(email: String!, otp: String!): JwtAuthResponse!
+  loginWithGoogle(idToken: String!): JwtAuthResponse!
+  logoutUser: Boolean!
+  createContactUs(createContactusInput: CreateContactusInput!): Contactus!
+  createHomePage(createHomeInput: CreateHomeInput!): Home!
+  createProduct(createProductInput: CreateProductInput!): Product!
+  deleteProductById(id: String!): Product!
+  updateProduct(productId: String!): Product!
+  updateVariant(productId: String!): Variant!
+  deleteVariantById(id: String!): Product!
+  addVariantToEistingPRoduct(productId: String!): Variant!
+  createCart(createCartInput: CreateCartInput!): Cart!
+  mergeCart(guestCartId: String!): Boolean!
+  removeItemFromCart(cartId: String!, variantId: String!): Cart!
+  createBlog(createBlogInput: CreateBlogInput!): Blog!
+  updateBlog(updateBlogInput: UpdateBlogInput!): Blog!
+  removeBlog(id: String!): Blog!
+  createWishlist(productId: String!): Wishlist!
+  deleteAllWishListItem: Boolean!
+  removeWishlistItytemById(id: String!): Wishlist!
+  createCoupon(input: CreateCouponInput!): Coupoun!
+  applyCoupon(input: ApplyCouponInput!): ApplyCouponResponse!
+  createOrder(input: CreateOrderInput!): String!
+  confirmOrder(razorpayOrderId: String!, razorpayPaymentId: String!, signature: String!): Order!
+  createUpdateRating(createRatingInput: CreateRatingInput!): Rating!
+  deleteRating(productId: String!): Rating!
+  getAnswerFromChat(query: String!, imageUrl: String): String!
+  markNotificationAsRead(notificationId: String!): Boolean!
+  notifyAllUsers(input: CreateNotificationInput!): Boolean!
+  startCronJob(name: String!): String!
+  stopCronJob(name: String!): String!
+  deleteCronJob(name: String!): String!
+}
+
+input CreateUserInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  password: String!
+  profileImage: String
+  dateOfBirth: String
+  gender: String
+  addresses: [CreateUserAddressInput!]
+}
+
+input CreateUserAddressInput {
+  pincode: Int
+  city: String
+  state: String
+  country: String
+  street: String
+  landmark: String
+  isDefault: Boolean! = false
+  latitude: Float
+  longitude: Float
+}
+
+input UpdateUserAddressInput {
+  pincode: Int
+  city: String
+  state: String
+  country: String
+  street: String
+  landmark: String
+  isDefault: Boolean = false
+  latitude: Float
+  longitude: Float
+  id: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateContactusInput {
+  name: String!
+  phone: String!
+  email: String!
+  message: String!
+}
+
+input CreateHomeInput {
+  image: String!
+  heading: String!
+  paragraphs: [CreateParagraphInput!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CreateParagraphInput {
+  text: String!
+}
+
+input CreateProductInput {
+  image: String!
+  name: String!
+  collection: String!
+  flavour: String!
+  origin: String!
+  qualities: [String!]!
+  caffeine: String!
+  allegens: [String!]!
+  isOrganic: Boolean!
+  isVegan: Boolean!
+  variants: [CreateVariantInput!]!
+}
+
+input CreateVariantInput {
+  size: String!
+  price: Float!
+}
+
+input CreateCartInput {
+  cartId: String
+  variantId: String!
+  quantity: Int!
+}
+
+input CreateBlogInput {
+  heading: String!
+  image: String!
+  paragraphs: [CreateBlogParagraphInput!]!
+}
+
+input CreateBlogParagraphInput {
+  text: String!
+}
+
+input UpdateBlogInput {
+  heading: String
+  image: String
+  paragraphs: [CreateBlogParagraphInput!]
+  id: String!
+}
+
+input CreateCouponInput {
+  code: String!
+  discount: Int!
+  type: String!
+  minimumAmount: Float
+  size: String
+  appliesToAll: Boolean! = false
+  expiresAt: DateTime!
+  productIds: [String!]
+  variantIds: [String!]
+}
+
+input ApplyCouponInput {
+  couponCode: String!
+  cartTotal: Float!
+  productIds: [String!]
+  variantIds: [String!]
+}
+
+input CreateOrderInput {
+  amount: Int!
+  currency: String! = "INR"
+}
+
+input CreateRatingInput {
+  productId: String!
+  rating: Float!
+  review: String
+}
+
+input CreateNotificationInput {
+  title: String!
+  message: String!
+  sendEmail: Boolean! = false
+  expiresAt: DateTime
+  type: String
+}
