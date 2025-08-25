@@ -28,6 +28,7 @@ const chat_module_1 = require("./chat/chat.module");
 const notification_module_1 = require("./notification/notification.module");
 const schedule_1 = require("@nestjs/schedule");
 const tasks_module_1 = require("./tasks/tasks.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -43,6 +44,7 @@ exports.AppModule = AppModule = __decorate([
                 playground: true,
                 introspection: true,
             }),
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
             schedule_1.ScheduleModule.forRoot(),
             user_module_1.UserModule,
             auth_module_1.AuthModule,

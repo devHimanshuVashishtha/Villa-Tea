@@ -2,6 +2,7 @@
 
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+// nsjz zfgb krig rugc
 
 @Injectable()
 export class MailService {

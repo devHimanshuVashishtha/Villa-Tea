@@ -11,11 +11,13 @@ const common_1 = require("@nestjs/common");
 const payment_resolver_1 = require("./payment.resolver");
 const payment_service_1 = require("./payment.service");
 const prisma_service_1 = require("../prisma.service");
+const config_1 = require("@nestjs/config");
 let PaymentModule = class PaymentModule {
 };
 exports.PaymentModule = PaymentModule;
 exports.PaymentModule = PaymentModule = __decorate([
     (0, common_1.Module)({
+        imports: [config_1.ConfigModule],
         providers: [payment_resolver_1.PaymentResolver, payment_service_1.PaymentService, prisma_service_1.PrismaService],
         exports: [payment_service_1.PaymentService]
     })

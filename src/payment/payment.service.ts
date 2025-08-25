@@ -3,15 +3,19 @@ import { PrismaService } from 'src/prisma.service';
 import Razorpay = require('razorpay');
 import * as crypto from 'crypto';
 import { Order } from './entities/payment.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PaymentService {
   private razorpay: any;
-
-  constructor(private readonly prisma: PrismaService) {
+  constructor(private configService: ConfigService, private readonly prisma: PrismaService) {
+    console.log(this.configService.get<string>('RAZORPAY_KEY_ID'));
     this.razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      // key_id: this.configService.get<string>('RAZORPAY_KEY_ID'),\
+      key_id: this.configService.get<string>('RAZORPAY_KEY_ID'),
+      key_secret: this.configService.get<string>('RAZORPAY_KEY_SECRET'),
+      // key_id: process.env.RAZORPAY_KEY_ID,
+      // key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
   }
 

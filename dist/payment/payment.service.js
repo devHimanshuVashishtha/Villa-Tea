@@ -14,14 +14,18 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
+const config_1 = require("@nestjs/config");
 let PaymentService = class PaymentService {
+    configService;
     prisma;
     razorpay;
-    constructor(prisma) {
+    constructor(configService, prisma) {
+        this.configService = configService;
         this.prisma = prisma;
+        console.log(this.configService.get('RAZORPAY_KEY_ID'));
         this.razorpay = new Razorpay({
-            key_id: process.env.RAZORPAY_KEY_ID,
-            key_secret: process.env.RAZORPAY_KEY_SECRET,
+            key_id: this.configService.get('RAZORPAY_KEY_ID'),
+            key_secret: this.configService.get('RAZORPAY_KEY_SECRET'),
         });
     }
     async createOrder(userId, amount, currency = 'INR') {
@@ -134,6 +138,6 @@ let PaymentService = class PaymentService {
 exports.PaymentService = PaymentService;
 exports.PaymentService = PaymentService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [config_1.ConfigService, prisma_service_1.PrismaService])
 ], PaymentService);
 //# sourceMappingURL=payment.service.js.map

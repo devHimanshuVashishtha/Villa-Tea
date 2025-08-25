@@ -7,6 +7,7 @@ export declare class UserResolver {
     constructor(userService: UserService);
     createUser(createUserInput: CreateUserInput): Promise<{
         addresses: {
+            id: string;
             pincode: number | null;
             city: string | null;
             state: string | null;
@@ -16,24 +17,23 @@ export declare class UserResolver {
             isDefault: boolean;
             latitude: number | null;
             longitude: number | null;
-            id: string;
-            userId: string;
             createdAt: Date;
             updatedAt: Date;
+            userId: string;
         }[];
     } & {
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string;
         password: string;
         profileImage: string | null;
         dateOfBirth: string | null;
         gender: string | null;
-        id: string;
-        role: import("generated/prisma").$Enums.Role;
         otp: string | null;
         otpExpiresAt: Date | null;
+        role: import("generated/prisma").$Enums.Role;
     }>;
     sendOtpForForgotPassword(email: string): Promise<{
         output: string;
@@ -57,20 +57,21 @@ export declare class UserResolver {
     addUserAddressByManualOrLiveLocation(context: any, createUserAddressInput: CreateUserAddressInput): Promise<Address | null>;
     makeDefaultAddress(context: any, addressFieldId: string): Promise<Address | null>;
     deleteAccount(context: any): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string;
         password: string;
         profileImage: string | null;
         dateOfBirth: string | null;
         gender: string | null;
-        id: string;
-        role: import("generated/prisma").$Enums.Role;
         otp: string | null;
         otpExpiresAt: Date | null;
+        role: import("generated/prisma").$Enums.Role;
     }>;
     deleteUserAddress(addressId: string): Promise<{
+        id: string;
         pincode: number | null;
         city: string | null;
         state: string | null;
@@ -80,9 +81,8 @@ export declare class UserResolver {
         isDefault: boolean;
         latitude: number | null;
         longitude: number | null;
-        id: string;
-        userId: string;
         createdAt: Date;
         updatedAt: Date;
+        userId: string;
     }>;
 }

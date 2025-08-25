@@ -39,7 +39,7 @@ function isGeoLocationFilled(input: CreateUserAddressInput): boolean {
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createUserInput: CreateUserInput) {
     try {
@@ -54,39 +54,39 @@ export class UserService {
         gender,
         addresses,
       } = createUserInput;
-  
+
       // Basic validations
       if (!password) {
         throw new BadRequestException('Password is compulsory');
       }
-  
+
       if (!isValidEmail(email)) {
         throw new BadRequestException('Invalid email format');
       }
-  
+
       if (!isValidPhone(phone)) {
         throw new BadRequestException(
           'Invalid phone number. Must be 10 digits with country code',
         );
       }
-  
+
       const existingUser = await this.prisma.user.findFirst({
         where: {
           OR: [{ email }, { phone }],
         },
       });
-  
+
       if (existingUser) {
         throw new BadRequestException('Please enter unique email and phone');
       }
-  
+
       const hashedPassword = await bcrypt.hash(password, 10);
-  
+
       // Process and clean addresses
       let cleanedAddresses = await Promise.all(
         (addresses || []).map(async (address) => {
           let finalAddress: any;
-  
+
           if (isGeoLocationFilled(address)) {
             const geoData = await reverseGeocode(
               address.latitude!,
@@ -117,11 +117,11 @@ export class UserService {
               country: address.country ?? null,
             };
           }
-  
+
           return finalAddress;
         }),
       );
-  
+
       let defaultAssigned = false;
       cleanedAddresses = cleanedAddresses.map((addr) => {
         if (addr.isDefault && !defaultAssigned) {
@@ -130,12 +130,12 @@ export class UserService {
         }
         return { ...addr, isDefault: false };
       });
-  
+
       // If none is marked default, make the first one default
       if (!defaultAssigned && cleanedAddresses.length > 0) {
         cleanedAddresses[0].isDefault = true;
       }
-  
+
       // Create user
       const newUser = await this.prisma.user.create({
         data: {
@@ -150,15 +150,15 @@ export class UserService {
           addresses:
             cleanedAddresses.length > 0
               ? {
-                  create: cleanedAddresses,
-                }
+                create: cleanedAddresses,
+              }
               : undefined,
         },
         include: {
           addresses: true,
         },
       });
-  
+
       return newUser;
     } catch (error) {
       throw new InternalServerErrorException(
@@ -166,7 +166,7 @@ export class UserService {
       );
     }
   }
-  
+
   async changePassword(
     userId: string,
     oldPassword: string,
@@ -177,14 +177,14 @@ export class UserService {
       if (newPassword !== confirmNewPassword) {
         throw new BadRequestException('The new password and confirm password do not match');
       }
-  
+
       const existingUser = await this.prisma.user.findUnique({
         where: { id: userId },
       });
       if (!existingUser) {
         throw new NotFoundException('User not found');
       }
-  
+
       const isValidatePassword = await bcrypt.compare(
         oldPassword,
         existingUser.password,
@@ -192,7 +192,7 @@ export class UserService {
       if (!isValidatePassword) {
         throw new UnauthorizedException('Incorrect old password');
       }
-  
+
       const isNewAndOldPasswordSame = await bcrypt.compare(
         newPassword,
         existingUser.password,
@@ -200,14 +200,14 @@ export class UserService {
       if (isNewAndOldPasswordSame) {
         throw new BadRequestException("The old and new password can't be the same");
       }
-  
+
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-  
+
       await this.prisma.user.update({
         where: { id: userId },
         data: { password: hashedPassword },
       });
-  
+
       return { message: 'Password updated successfully' };
     } catch (error) {
       if (
@@ -222,13 +222,13 @@ export class UserService {
       );
     }
   }
-  
+
   async otpSentToEmail(
     email: string,
   ): Promise<{ output: string; email: string }> {
     try {
       let existingUser: User | null = null;
-  
+
       if (email) {
         existingUser = await this.prisma.user.findUnique({
           where: { email },
@@ -237,17 +237,17 @@ export class UserService {
       } else {
         throw new BadRequestException('Either email  must be provided');
       }
-  
+
       if (!existingUser) {
         throw new NotFoundException('User not registered with this email or phone number');
       }
-  
+
       const userEmail = existingUser.email;
-  
+
       const generateSixDigitPassword = () =>
         Math.floor(100000 + Math.random() * 900000).toString();
       const otp = generateSixDigitPassword();
-  
+
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -255,16 +255,16 @@ export class UserService {
           pass: process.env.EMAIL_PASSWORD,
         },
       });
-  
+
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: userEmail,
         subject: 'Your Verification Code',
         text: `Your verification code is: ${otp}`,
       };
-  
+
       await transporter.sendMail(mailOptions);
-  
+
       await this.prisma.passwordResetToken.upsert({
         where: { userId: existingUser.id },
         update: {
@@ -278,7 +278,7 @@ export class UserService {
           expiresAt: new Date(Date.now() + 10 * 60 * 1000),
         },
       });
-  
+
       return { output: 'OTP sent to user email', email: userEmail };
     } catch (error) {
       throw new InternalServerErrorException(
@@ -286,7 +286,7 @@ export class UserService {
       );
     }
   }
-  
+
   async verifyForgotPasswordOtp(
     email: string,
     otp: string,
@@ -295,11 +295,11 @@ export class UserService {
       const user = await this.prisma.user.findUnique({
         where: { email },
       });
-  
+
       if (!user) {
         throw new BadRequestException('User not found with provided email');
       }
-  
+
       const record = await this.prisma.passwordResetToken.findFirst({
         where: {
           userId: user.id,
@@ -310,16 +310,16 @@ export class UserService {
           },
         },
       });
-  
+
       if (!record) {
         throw new BadRequestException('Invalid or expired OTP');
       }
-  
+
       await this.prisma.passwordResetToken.update({
         where: { id: record.id },
         data: { used: true },
       });
-  
+
       return {
         success: true,
         message: 'OTP verified successfully',
@@ -330,25 +330,25 @@ export class UserService {
       throw new InternalServerErrorException(`OTP verification failed: ${error.message}`);
     }
   }
-  
+
   async resetPassword(
     userId: string,
     newPassword: string,
   ): Promise<{ success: boolean; message: string }> {
     try {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-  
+
       await this.prisma.user.update({
         where: { id: userId },
         data: { password: hashedPassword },
       });
-  
+
       return { success: true, message: 'Password reset successful' };
     } catch (error) {
       throw new InternalServerErrorException(`Password reset failed: ${error.message}`);
     }
   }
-  
+
   async findOne(userId: string): Promise<PrismaUser | null> {
     try {
       return await this.prisma.user.findUnique({
@@ -358,7 +358,7 @@ export class UserService {
       throw new InternalServerErrorException(`Find user failed: ${error.message}`);
     }
   }
-  
+
   async getProfile(userId: string): Promise<UserProfile | null> {
     try {
       const user = await this.prisma.user.findUnique({
@@ -374,7 +374,7 @@ export class UserService {
       throw new InternalServerErrorException(`Get profile failed: ${error.message}`);
     }
   }
-  
+
   async updateProfile(
     userId: string,
     updateUserInput: UpdateUserInput,
@@ -383,13 +383,13 @@ export class UserService {
       const existingUser = await this.prisma.user.findUnique({
         where: { id: userId },
       });
-  
+
       if (!existingUser) {
         throw new NotFoundException('User not found');
       }
-  
+
       const { id, addresses, ...data } = updateUserInput;
-  
+
       return await this.prisma.user.update({
         where: { id: userId },
         data,
@@ -400,22 +400,22 @@ export class UserService {
       throw new InternalServerErrorException(`Update profile failed: ${error.message}`);
     }
   }
-  
+
   async updateAddress(
     userId: string,
     updateUserAddressInput: UpdateUserAddressInput,
   ): Promise<Address | null> {
     try {
       const { id, isDefault, ...updateData } = updateUserAddressInput;
-  
+
       const existingAddress = await this.prisma.address.findUnique({
         where: { id },
       });
-  
+
       if (!existingAddress) {
         throw new NotFoundException('Address not found for this user');
       }
-  
+
       if (isDefault === true) {
         await this.prisma.address.updateMany({
           where: {
@@ -425,7 +425,7 @@ export class UserService {
           data: { isDefault: false },
         });
       }
-  
+
       const updatedAddress = await this.prisma.address.update({
         where: { id },
         data: {
@@ -433,14 +433,14 @@ export class UserService {
           isDefault: isDefault ?? existingAddress.isDefault,
         },
       });
-  
+
       return updatedAddress;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(`Update address failed: ${error.message}`);
     }
   }
-  
+
   async addAddress(
     userId: string,
     address: CreateUserAddressInput,
@@ -449,13 +449,14 @@ export class UserService {
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
       });
-  
+
       if (!user) {
         throw new NotFoundException('User not found');
       }
-  
+
       const hasCoordinates =
-        address.latitude !== null && address.longitude !== null;
+        typeof address.latitude === 'number' &&
+        typeof address.longitude === 'number';
       const hasAddressFields =
         !!address.street ||
         !!address.city ||
@@ -463,21 +464,21 @@ export class UserService {
         !!address.country ||
         !!address.pincode ||
         !!address.landmark;
-  
+
       if (hasCoordinates && hasAddressFields) {
         throw new BadRequestException(
           'Provide either coordinates OR address fields, not both',
         );
       }
-  
+
       if (!hasCoordinates && !hasAddressFields) {
         throw new BadRequestException(
           'Please provide either coordinates OR address fields',
         );
       }
-  
+
       let finalAddress: any;
-  
+
       if (hasCoordinates) {
         const geoData = await reverseGeocode(
           address.latitude!,
@@ -508,14 +509,14 @@ export class UserService {
           country: address.country ?? null,
         };
       }
-  
+
       if (address.isDefault) {
         await this.prisma.address.updateMany({
           where: { userId },
           data: { isDefault: false },
         });
       }
-  
+
       const newAddress = await this.prisma.address.create({
         data: {
           ...finalAddress,
@@ -523,13 +524,13 @@ export class UserService {
           isDefault: address.isDefault ?? false,
         },
       });
-  
+
       return newAddress;
     } catch (error) {
       throw new Error(`Error while adding address: ${error.message}`);
     }
   }
-  
+
 
   async makeDefaultAddress(
     userId: string,
@@ -539,11 +540,11 @@ export class UserService {
       const address = await this.prisma.address.findUnique({
         where: { id: addressFieldId },
       });
-  
+
       if (!address) {
         throw new NotFoundException('Address not found for this user');
       }
-  
+
       await this.prisma.address.updateMany({
         where: {
           userId,
@@ -551,18 +552,18 @@ export class UserService {
         },
         data: { isDefault: false },
       });
-  
+
       const updatedAddress = await this.prisma.address.update({
         where: { id: addressFieldId },
         data: { isDefault: true },
       });
-  
+
       return updatedAddress;
     } catch (error) {
       throw new Error(`Error while setting default address: ${error.message}`);
     }
   }
-  
+
   async deleteUser(userId: string) {
     try {
       const user = await this.prisma.user.delete({
@@ -573,7 +574,7 @@ export class UserService {
       throw new Error(`Error while deleting user: ${error.message}`);
     }
   }
-  
+
   async deleteAddress(addressId: string) {
     try {
       const address = await this.prisma.address.delete({
@@ -584,5 +585,5 @@ export class UserService {
       throw new Error(`Error while deleting address: ${error.message}`);
     }
   }
-  
+
 }

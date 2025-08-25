@@ -345,7 +345,8 @@ let UserService = class UserService {
             if (!user) {
                 throw new common_1.NotFoundException('User not found');
             }
-            const hasCoordinates = address.latitude !== null && address.longitude !== null;
+            const hasCoordinates = typeof address.latitude === 'number' &&
+                typeof address.longitude === 'number';
             const hasAddressFields = !!address.street ||
                 !!address.city ||
                 !!address.state ||

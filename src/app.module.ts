@@ -1,4 +1,4 @@
-import { Module} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -20,24 +20,25 @@ import { ChatModule } from './chat/chat.module';
 import { NotificationModule } from './notification/notification.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
   imports: [
- 
-    
+
+
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }), // 👈 जरूरी है
       uploads: false,
       csrfPrevention: false,
-      playground: true, 
-      introspection: true, 
-     }),
-     
-     ScheduleModule.forRoot(),
-     
+      playground: true,
+      introspection: true,
+    }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
+
 
     UserModule,
     AuthModule,
@@ -53,8 +54,8 @@ import { TasksModule } from './tasks/tasks.module';
     RatingModule,
     ChatModule,
     NotificationModule,
-   TasksModule
+    TasksModule
   ],
-  providers: [ PrismaService],
+  providers: [PrismaService],
 })
-export class AppModule {}
+export class AppModule { }

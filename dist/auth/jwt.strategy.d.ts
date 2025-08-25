@@ -9,18 +9,18 @@ export declare class JwtStrategy extends JwtStrategy_base {
     private readonly prisma;
     constructor(authService: AuthService, userService: UserService, prisma: PrismaService);
     validate(req: Request, payload: JwtPayload): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string;
         password: string;
         profileImage: string | null;
         dateOfBirth: string | null;
         gender: string | null;
-        id: string;
-        role: import("generated/prisma").$Enums.Role;
         otp: string | null;
         otpExpiresAt: Date | null;
+        role: import("generated/prisma").$Enums.Role;
     }>;
 }
 export {};

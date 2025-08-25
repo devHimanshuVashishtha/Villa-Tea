@@ -8,6 +8,7 @@ export declare class UserService {
     constructor(prisma: PrismaService);
     create(createUserInput: CreateUserInput): Promise<{
         addresses: {
+            id: string;
             pincode: number | null;
             city: string | null;
             state: string | null;
@@ -17,24 +18,23 @@ export declare class UserService {
             isDefault: boolean;
             latitude: number | null;
             longitude: number | null;
-            id: string;
-            userId: string;
             createdAt: Date;
             updatedAt: Date;
+            userId: string;
         }[];
     } & {
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string;
         password: string;
         profileImage: string | null;
         dateOfBirth: string | null;
         gender: string | null;
-        id: string;
-        role: import("generated/prisma").$Enums.Role;
         otp: string | null;
         otpExpiresAt: Date | null;
+        role: import("generated/prisma").$Enums.Role;
     }>;
     changePassword(userId: string, oldPassword: string, newPassword: string, confirmNewPassword: string): Promise<{
         message: string;
@@ -59,20 +59,21 @@ export declare class UserService {
     addAddress(userId: string, address: CreateUserAddressInput): Promise<Address | null>;
     makeDefaultAddress(userId: string, addressFieldId: string): Promise<Address | null>;
     deleteUser(userId: string): Promise<{
+        id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         phone: string;
         password: string;
         profileImage: string | null;
         dateOfBirth: string | null;
         gender: string | null;
-        id: string;
-        role: import("generated/prisma").$Enums.Role;
         otp: string | null;
         otpExpiresAt: Date | null;
+        role: import("generated/prisma").$Enums.Role;
     }>;
     deleteAddress(addressId: string): Promise<{
+        id: string;
         pincode: number | null;
         city: string | null;
         state: string | null;
@@ -82,9 +83,8 @@ export declare class UserService {
         isDefault: boolean;
         latitude: number | null;
         longitude: number | null;
-        id: string;
-        userId: string;
         createdAt: Date;
         updatedAt: Date;
+        userId: string;
     }>;
 }
