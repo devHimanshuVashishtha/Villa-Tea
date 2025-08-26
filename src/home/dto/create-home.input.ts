@@ -17,9 +17,9 @@ export class CreateHomeInput {
   @Field(() => [CreateParagraphInput])
   paragraphs: CreateParagraphInput[];
 
-  @Field(() => Date)
-  createdAt: Date;
+  // @Field(() => Date)
+  // createdAt: Date;
 
-  @Field(() => Date)
-  updatedAt: Date;
+  // @Field(() => Date)
+  // updatedAt: Date;
 }
