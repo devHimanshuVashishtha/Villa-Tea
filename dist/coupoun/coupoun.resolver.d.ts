@@ -8,13 +8,13 @@ export declare class CoupounResolver {
     createCoupon(input: CreateCouponInput): Promise<{
         id: string;
         createdAt: Date;
-        expiresAt: Date;
         size: string | null;
         code: string;
         discount: number;
         type: import("generated/prisma").$Enums.DiscountType;
         minimumAmount: number | null;
         appliesToAll: boolean;
+        expiresAt: Date;
         isActive: boolean;
     }>;
     applyCoupon(context: any, input: ApplyCouponInput): Promise<ApplyCouponResponse>;

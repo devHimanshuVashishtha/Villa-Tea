@@ -21,6 +21,9 @@ export class Product {
   name: string;
 
   @Field()
+  image:string;
+
+  @Field()
   collection: string;
 
   @Field()

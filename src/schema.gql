@@ -104,6 +104,7 @@ type Variant {
 type Product {
   id: String!
   name: String!
+  image: String!
   collection: String!
   flavour: String!
   origin: String!
@@ -354,8 +355,6 @@ input CreateHomeInput {
   image: String!
   heading: String!
   paragraphs: [CreateParagraphInput!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 input CreateParagraphInput {

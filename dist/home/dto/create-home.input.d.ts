@@ -5,6 +5,4 @@ export declare class CreateHomeInput {
     image: string;
     heading: string;
     paragraphs: CreateParagraphInput[];
-    createdAt: Date;
-    updatedAt: Date;
 }

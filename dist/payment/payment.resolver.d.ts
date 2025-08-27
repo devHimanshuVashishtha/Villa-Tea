@@ -7,12 +7,12 @@ export declare class PaymentResolver {
     createOrder(context: any, input: CreateOrderInput): Promise<string>;
     confirmOrder(context: any, razorpayOrderId: string, razorpayPaymentId: string, signature: string): Promise<{
         id: string;
-        userId: string;
-        createdAt: Date;
-        updatedAt: Date;
         total: number;
         status: string;
+        createdAt: Date;
+        updatedAt: Date;
         paymentId: string;
+        userId: string;
     }>;
     myOrders(context: any): Promise<Order[]>;
 }

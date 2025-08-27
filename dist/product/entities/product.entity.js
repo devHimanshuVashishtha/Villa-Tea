@@ -35,6 +35,7 @@ exports.Variant = Variant = __decorate([
 let Product = class Product {
     id;
     name;
+    image;
     collection;
     flavour;
     origin;
@@ -54,6 +55,10 @@ __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
 ], Product.prototype, "name", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], Product.prototype, "image", void 0);
 __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)

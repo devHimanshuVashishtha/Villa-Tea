@@ -26,8 +26,6 @@ let CreateHomeInput = class CreateHomeInput {
     image;
     heading;
     paragraphs;
-    createdAt;
-    updatedAt;
 };
 exports.CreateHomeInput = CreateHomeInput;
 __decorate([
@@ -42,14 +40,6 @@ __decorate([
     (0, graphql_1.Field)(() => [CreateParagraphInput]),
     __metadata("design:type", Array)
 ], CreateHomeInput.prototype, "paragraphs", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => Date),
-    __metadata("design:type", Date)
-], CreateHomeInput.prototype, "createdAt", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => Date),
-    __metadata("design:type", Date)
-], CreateHomeInput.prototype, "updatedAt", void 0);
 exports.CreateHomeInput = CreateHomeInput = __decorate([
     (0, graphql_1.InputType)()
 ], CreateHomeInput);

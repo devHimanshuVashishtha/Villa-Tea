@@ -6,6 +6,7 @@ export declare class Variant {
 export declare class Product {
     id: string;
     name: string;
+    image: string;
     collection: string;
     flavour: string;
     origin: string;

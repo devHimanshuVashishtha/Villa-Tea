@@ -14,9 +14,9 @@ export declare class ProductService {
         }[];
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         image: string;
         collection: string;
         flavour: string;
@@ -37,9 +37,9 @@ export declare class ProductService {
             }[];
         } & {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             image: string;
             collection: string;
             flavour: string;
@@ -63,9 +63,9 @@ export declare class ProductService {
         }[];
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         image: string;
         collection: string;
         flavour: string;
@@ -78,9 +78,9 @@ export declare class ProductService {
     }) | null>;
     deleteOne(id: string): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         image: string;
         collection: string;
         flavour: string;
@@ -100,9 +100,9 @@ export declare class ProductService {
         }[];
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         image: string;
         collection: string;
         flavour: string;
